@@ -1,4 +1,4 @@
-# Programação Modular - Clínica Médica
+# Clínica Médica
 
 Clínica Médica é um projeto implementado em Java como proposta de trabalho final da disciplina de Engenharia de Software do Departamento de Ciências da Computação - UFMG.
 
