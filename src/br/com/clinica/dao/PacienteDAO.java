@@ -26,8 +26,8 @@ public class PacienteDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
 		if (entityManager == null) {
+			EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 			entityManager = factory.createEntityManager();
 		}
 
@@ -54,21 +54,10 @@ public class PacienteDAO {
 		}
 	}
 
-	public void merge(Paciente paciente) {
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.merge(paciente);
-			entityManager.getTransaction().commit();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			entityManager.getTransaction().rollback();
-		}
-	}
-
 	public void remove(Paciente paciente) {
 		try {
 			entityManager.getTransaction().begin();
-			paciente = entityManager.find(Paciente.class, paciente.getIdPaciente());
+			paciente = entityManager.find(Paciente.class, paciente.getCodigo());
 			entityManager.remove(paciente);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
@@ -76,14 +65,4 @@ public class PacienteDAO {
 			entityManager.getTransaction().rollback();
 		}
 	}
-
-	public void removeById(final int id) {
-		try {
-			Paciente paciente = getById(id);
-			remove(paciente);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
 }

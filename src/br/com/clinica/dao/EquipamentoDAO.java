@@ -25,7 +25,7 @@ public class EquipamentoDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -72,21 +72,12 @@ public class EquipamentoDAO {
 	public void remove(Equipamento equip) {
 		try {
 			entityManager.getTransaction().begin();
-			equip = entityManager.find(Equipamento.class, equip.getIdEquipamento());
+			equip = entityManager.find(Equipamento.class, equip.getCodigo());
 			entityManager.remove(equip);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void removeById(final int id) {
-		try {
-			Equipamento equip = getById(id);
-			remove(equip);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 }

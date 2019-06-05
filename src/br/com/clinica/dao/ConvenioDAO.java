@@ -26,7 +26,7 @@ public class ConvenioDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -68,21 +68,12 @@ public class ConvenioDAO {
 	public void remove(Convenio convenio) {
 		try {
 			entityManager.getTransaction().begin();
-			convenio = entityManager.find(Convenio.class, convenio.getIdConvenio());
+			convenio = entityManager.find(Convenio.class, convenio.getCodigo());
 			entityManager.remove(convenio);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void removeById(final int id) {
-		try {
-			Convenio convenio = getById(id);
-			remove(convenio);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 

@@ -25,7 +25,7 @@ public class TipoExameDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -53,35 +53,15 @@ public class TipoExameDAO {
 		}
 	}
 
-	public void merge(TipoExame exame) {
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.merge(exame);
-			entityManager.getTransaction().commit();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			entityManager.getTransaction().rollback();
-		}
-	}
-
 	public void remove(TipoExame exame) {
 		try {
 			entityManager.getTransaction().begin();
-			exame = entityManager.find(TipoExame.class, exame.getIdTipoExame());
+			exame = entityManager.find(TipoExame.class, exame.getCodigo());
 			entityManager.remove(exame);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void removeById(final int id) {
-		try {
-			TipoExame exame = getById(id);
-			remove(exame);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 }

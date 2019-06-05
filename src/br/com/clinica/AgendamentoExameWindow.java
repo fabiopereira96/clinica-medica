@@ -177,57 +177,54 @@ public class AgendamentoExameWindow {
 		frame.getContentPane().add(scrollPane);
 		
 		JCalendar calendar = new JCalendar();
-		calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				horariosModel.removeAllElements();
-				chosenDate = calendar.getDate();
-				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(chosenDate);
-				int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
-				
-				for (int hora = 7; hora < 20; hora++) {
-					for (int m = 0; m < 3; m++) {
-						cal.set(Calendar.HOUR_OF_DAY, hora);
-						cal.set(Calendar.MINUTE, m*20);
-						cal.set(Calendar.SECOND, 0);
-						cal.set(Calendar.MILLISECOND, 0);
-						Date finalDate = cal.getTime();
+		calendar.getDayChooser().addPropertyChangeListener(evt -> {
+			horariosModel.removeAllElements();
+			chosenDate = calendar.getDate();
 
-						List<Medico> availableDoctors = new ArrayList<Medico>();
-						for (Medico doctor : allDoctors) {
-							List<DiaAtendimento> dias = doctor.getDiaAtendimento();
-							
-							boolean atende = false;	
-							for (DiaAtendimento dia : dias) {
-								if (dia.getCodigo() == dayofweek) {
-									atende = true;
-									break;
-								}
-							}
-							
-							if (!atende) continue;
-							
-							int crm = Integer.valueOf(doctor.getCrm()).intValue();
-							List<AgendaEquipamento> conflitosEquip = AgendaEquipamentoDAO.getInstance().getByDateAndCrm(finalDate, crm);
-							List<AgendaMedica> conflitosConsulta = AgendaMedicaDAO.getInstance().isConflict(finalDate, doctor);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(chosenDate);
+			int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
 
-							if (conflitosEquip.size() == 0 && conflitosConsulta.size() == 0) {
-								availableDoctors.add(doctor);
+			for (int hora = 7; hora < 20; hora++) {
+				for (int m = 0; m < 3; m++) {
+					cal.set(Calendar.HOUR_OF_DAY, hora);
+					cal.set(Calendar.MINUTE, m*20);
+					cal.set(Calendar.SECOND, 0);
+					cal.set(Calendar.MILLISECOND, 0);
+					Date finalDate = cal.getTime();
+
+					List<Medico> availableDoctors = new ArrayList<Medico>();
+					for (Medico doctor : allDoctors) {
+						List<DiaAtendimento> dias = doctor.getDiaAtendimento();
+
+						boolean atende = false;
+						for (DiaAtendimento dia : dias) {
+							if (dia.getCodigo() == dayofweek) {
+								atende = true;
+								break;
 							}
 						}
 
-						if (availableDoctors.size() != 0) {
-							String timeStr = String.format("%02d", hora) + ":" + String.format("%02d", tempoExame*m);
-							horariosModel.addElement(timeStr);
-							
-							doctorsPerTime.put(timeStr, availableDoctors);
+						if (!atende) continue;
+
+						List<AgendaEquipamento> conflitosEquip = AgendaEquipamentoDAO.getInstance().getByDateAndMedico(finalDate, doctor);
+						List<AgendaMedica> conflitosConsulta = AgendaMedicaDAO.getInstance().isConflict(finalDate, doctor);
+
+						if (conflitosEquip.size() == 0 && conflitosConsulta.size() == 0) {
+							availableDoctors.add(doctor);
 						}
 					}
-				}
 
-				horariosList.setSelectedIndex(0);
+					if (availableDoctors.size() != 0) {
+						String timeStr = String.format("%02d", hora) + ":" + String.format("%02d", tempoExame*m);
+						horariosModel.addElement(timeStr);
+
+						doctorsPerTime.put(timeStr, availableDoctors);
+					}
+				}
 			}
+
+			horariosList.setSelectedIndex(0);
 		});
 		calendar.setBounds(12, 34, 223, 138);
 		frame.getContentPane().add(calendar);

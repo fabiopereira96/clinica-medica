@@ -84,7 +84,7 @@ public class EdicaoAgendaConsultaWindow {
 				int horarioAtendimentoHora   = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(0, 2));
 				int horarioAtendimentoMinuto = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(3, 5));
 
-				List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico().getCodigo());
+				List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico());
 				
 				for (DiaAtendimento d : diasAtendimentoList) {
 					if (d.getCodigo() == selectedDiaId) {

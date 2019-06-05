@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import br.com.clinica.entity.AgendaEquipamento;
+import br.com.clinica.entity.Medico;
 
 public class AgendaEquipamentoDAO {
 
@@ -26,16 +27,12 @@ public class AgendaEquipamentoDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
 
 		return entityManager;
-	}
-
-	public AgendaEquipamento getByDate(final Date date) {
-		return entityManager.find(AgendaEquipamento.class, date);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -44,25 +41,14 @@ public class AgendaEquipamentoDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<AgendaEquipamento> getByDateAndCrm(final Date date, int crm) {
-		return entityManager.createQuery("FROM " + AgendaEquipamento.class.getName() + " WHERE dataAgendamento='" + date + "' AND idMedico=" + crm).getResultList();
+	public List<AgendaEquipamento> getByDateAndMedico(final Date date, Medico medico) {
+		return entityManager.createQuery("FROM " + AgendaEquipamento.class.getName() + " WHERE data_agendamento=" + date + "AND medico=" + medico.getCodigo()).getResultList();
 	}
 	
 	public void persist(AgendaEquipamento agenda) {
 		try {
 			entityManager.getTransaction().begin();
 			entityManager.persist(agenda);
-			entityManager.getTransaction().commit();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void merge(AgendaEquipamento agenda) {
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.merge(agenda);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -79,15 +65,6 @@ public class AgendaEquipamentoDAO {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void removeByDate(final Date date) {
-		try {
-			AgendaEquipamento agenda = getByDate(date);
-			remove(agenda);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 }

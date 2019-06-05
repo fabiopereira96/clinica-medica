@@ -27,7 +27,7 @@ public class EspecialidadeDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -81,7 +81,7 @@ public class EspecialidadeDAO {
 	public void remove(Especialidade especialidade) {
 		try {
 			entityManager.getTransaction().begin();
-			especialidade = entityManager.find(Especialidade.class, especialidade.getIdEspecialidade());
+			especialidade = entityManager.find(Especialidade.class, especialidade.getCodigo());
 			entityManager.remove(especialidade);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {

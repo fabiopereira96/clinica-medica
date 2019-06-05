@@ -77,105 +77,100 @@ public class EdicaoAgendaExameWindow {
 		List<Medico> medicos = MedicoDAO.getInstance().findAll();
 		
 		JComboBox comboBoxMedicos = new JComboBox(medicos.toArray());
-		comboBoxMedicos.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				boolean printHorarios = false;
-				int selectedDiaId = Utils.getDayId(calendar.getDate().toString());
-				int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
-				Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
-				List<DiaAtendimento> diasAtendimentoList = selectedMedico.getDiaAtendimento();
-				int intervaloAtendimento = Integer.parseInt(selectedMedico.getIntervaloAtendimento().substring(3, 5));
-				int horarioAtendimentoHora   = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(0, 2));
-				int horarioAtendimentoMinuto = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(3, 5));
+		comboBoxMedicos.addItemListener(e -> {
+			boolean printHorarios = false;
+			int selectedDiaId = Utils.getDayId(calendar.getDate().toString());
+			int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
+			Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
+			List<DiaAtendimento> diasAtendimentoList = selectedMedico.getDiaAtendimento();
+			int intervaloAtendimento = Integer.parseInt(selectedMedico.getIntervaloAtendimento().substring(3, 5));
+			int horarioAtendimentoHora   = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(0, 2));
+			int horarioAtendimentoMinuto = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(3, 5));
 
-				List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico().getCodigo());
-				
-				for (DiaAtendimento d : diasAtendimentoList) {
-					if (d.getCodigo() == selectedDiaId) {
-						printHorarios = true;
-						break;
-					}
+			List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico());
+
+			for (DiaAtendimento d : diasAtendimentoList) {
+				if (d.getCodigo() == selectedDiaId) {
+					printHorarios = true;
+					break;
 				}
-				
-				if (printHorarios) {
-					Date compareDate = calendar.getDate();
-									
-					int currentHora = horarioAtendimentoHora;
-					int currentMin  = horarioAtendimentoMinuto;
-					
-					DefaultListModel listModel = new DefaultListModel();
-														
-					for (int i = 0; (i*intervaloAtendimento) <= 360; i++) {
-						currentHora += (currentMin + intervaloAtendimento) / 60;
-						currentMin = (horarioAtendimentoMinuto + i*intervaloAtendimento) % 60;
-						
-						compareDate.setHours(currentHora);
-						compareDate.setMinutes(currentMin);
-						compareDate.setSeconds(0);
-						
-						if (Utils.thisHorarioIsFree(selectedMedicoAgenda, compareDate))
-							listModel.addElement(String.format("%02d", currentHora) + ":" + String.format("%02d", currentMin));
-					}
-					
-					horariosList.setModel(listModel);
+			}
+
+			if (printHorarios) {
+				Date compareDate = calendar.getDate();
+
+				int currentHora = horarioAtendimentoHora;
+				int currentMin  = horarioAtendimentoMinuto;
+
+				DefaultListModel listModel = new DefaultListModel();
+
+				for (int i = 0; (i*intervaloAtendimento) <= 360; i++) {
+					currentHora += (currentMin + intervaloAtendimento) / 60;
+					currentMin = (horarioAtendimentoMinuto + i*intervaloAtendimento) % 60;
+
+					compareDate.setHours(currentHora);
+					compareDate.setMinutes(currentMin);
+					compareDate.setSeconds(0);
+
+					if (Utils.thisHorarioIsFree(selectedMedicoAgenda, compareDate))
+						listModel.addElement(String.format("%02d", currentHora) + ":" + String.format("%02d", currentMin));
 				}
-				else {
-					DefaultListModel listModel = new DefaultListModel();
-					horariosList.setModel(listModel);
-				}				
+
+				horariosList.setModel(listModel);
+			}
+			else {
+				DefaultListModel listModel = new DefaultListModel();
+				horariosList.setModel(listModel);
 			}
 		});
 		comboBoxMedicos.setEditable(true);
 		comboBoxMedicos.setBounds(247, 75, 273, 19);
 		frame.getContentPane().add(comboBoxMedicos);
 		
-		calendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
-			@SuppressWarnings({ "deprecation" })
-			public void propertyChange(PropertyChangeEvent evt) {
-				boolean printHorarios = false;
-				int selectedDiaId = Utils.getDayId(calendar.getDate().toString());
-				int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
-				Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
-				List<DiaAtendimento> diasAtendimentoList = selectedMedico.getDiaAtendimento();
-				int intervaloAtendimento = Integer.parseInt(selectedMedico.getIntervaloAtendimento().substring(3, 5));
-				int horarioAtendimentoHora   = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(0, 2));
-				int horarioAtendimentoMinuto = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(3, 5));
+		calendar.getDayChooser().addPropertyChangeListener(evt -> {
+			boolean printHorarios = false;
+			int selectedDiaId = Utils.getDayId(calendar.getDate().toString());
+			int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
+			Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
+			List<DiaAtendimento> diasAtendimentoList = selectedMedico.getDiaAtendimento();
+			int intervaloAtendimento = Integer.parseInt(selectedMedico.getIntervaloAtendimento().substring(3, 5));
+			int horarioAtendimentoHora   = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(0, 2));
+			int horarioAtendimentoMinuto = Integer.parseInt(selectedMedico.getHorarioAtendimento().substring(3, 5));
 
-				List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico().getCodigo());
-				
-				for (DiaAtendimento d : diasAtendimentoList) {
-					if (d.getCodigo() == selectedDiaId) {
-						printHorarios = true;
-						break;
-					}
+			List<AgendaMedica> selectedMedicoAgenda = AgendaMedicaDAO.getInstance().getByMedico(agenda.getMedico());
+
+			for (DiaAtendimento d : diasAtendimentoList) {
+				if (d.getCodigo() == selectedDiaId) {
+					printHorarios = true;
+					break;
 				}
-				
-				if (printHorarios) {
-					Date compareDate = calendar.getDate();
-									
-					int currentHora = horarioAtendimentoHora;
-					int currentMin  = horarioAtendimentoMinuto;
-					
-					DefaultListModel listModel = new DefaultListModel();
-														
-					for (int i = 0; (i*intervaloAtendimento) <= 360; i++) {
-						currentHora += (currentMin + intervaloAtendimento) / 60;
-						currentMin = (horarioAtendimentoMinuto + i*intervaloAtendimento) % 60;
-						
-						compareDate.setHours(currentHora);
-						compareDate.setMinutes(currentMin);
-						compareDate.setSeconds(0);
-						
-						if (Utils.thisHorarioIsFree(selectedMedicoAgenda, compareDate))
-							listModel.addElement(String.format("%02d", currentHora) + ":" + String.format("%02d", currentMin));
-					}
-					
-					horariosList.setModel(listModel);
+			}
+
+			if (printHorarios) {
+				Date compareDate = calendar.getDate();
+
+				int currentHora = horarioAtendimentoHora;
+				int currentMin  = horarioAtendimentoMinuto;
+
+				DefaultListModel listModel = new DefaultListModel();
+
+				for (int i = 0; (i*intervaloAtendimento) <= 360; i++) {
+					currentHora += (currentMin + intervaloAtendimento) / 60;
+					currentMin = (horarioAtendimentoMinuto + i*intervaloAtendimento) % 60;
+
+					compareDate.setHours(currentHora);
+					compareDate.setMinutes(currentMin);
+					compareDate.setSeconds(0);
+
+					if (Utils.thisHorarioIsFree(selectedMedicoAgenda, compareDate))
+						listModel.addElement(String.format("%02d", currentHora) + ":" + String.format("%02d", currentMin));
 				}
-				else {
-					DefaultListModel listModel = new DefaultListModel();
-					horariosList.setModel(listModel);
-				}
+
+				horariosList.setModel(listModel);
+			}
+			else {
+				DefaultListModel listModel = new DefaultListModel();
+				horariosList.setModel(listModel);
 			}
 		});
 		calendar.setBounds(12, 34, 223, 138);
@@ -211,48 +206,42 @@ public class EdicaoAgendaExameWindow {
 		
 		JButton atualizarButton = new JButton("Atualizar");
 		atualizarButton.setEnabled(false);
-		atualizarButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(  horariosList.isSelectionEmpty()
-					      || comboBoxPacientes.getSelectedItem().toString() == ""
-						) {
-							JOptionPane.showMessageDialog(null, "Selecione todos os campos!");
-							return;
-						}
+		atualizarButton.addActionListener(e -> {
+			if(  horariosList.isSelectionEmpty()
+					  || comboBoxPacientes.getSelectedItem().toString() == ""
+					) {
+						JOptionPane.showMessageDialog(null, "Selecione todos os campos!");
+						return;
+					}
 
-						AgendaEquipamento novaAgenda = new AgendaEquipamento();
-						
-						int horaAgendamento   = Integer.parseInt(horariosList.getSelectedValue().toString().substring(0,2));
-						int minutoAgendamento = Integer.parseInt(horariosList.getSelectedValue().toString().substring(3,5));
-						
-						Date diaAgendamento = calendar.getDate();
-						diaAgendamento.setHours(horaAgendamento);
-						diaAgendamento.setMinutes(minutoAgendamento);
-						diaAgendamento.setSeconds(0);
+					AgendaEquipamento novaAgenda = new AgendaEquipamento();
 
-						int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
-						Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
-						
-						novaAgenda.setDataAgendamento(diaAgendamento);
-						novaAgenda.setMedico(selectedMedico);
-							
-						novaAgenda.setPaciente(PacienteDAO.getInstance().getById(Integer.parseInt(comboBoxPacientes.getSelectedItem().toString().split(" ")[0])));
-						
-						AgendaEquipamentoDAO.getInstance().persist(novaAgenda);
-						AgendaEquipamentoDAO.getInstance().remove(agenda);
-						
-						JOptionPane.showMessageDialog(null, "Atualizado!");
-						frame.dispose();
-			}
+					int horaAgendamento   = Integer.parseInt(horariosList.getSelectedValue().toString().substring(0,2));
+					int minutoAgendamento = Integer.parseInt(horariosList.getSelectedValue().toString().substring(3,5));
+
+					Date diaAgendamento = calendar.getDate();
+					diaAgendamento.setHours(horaAgendamento);
+					diaAgendamento.setMinutes(minutoAgendamento);
+					diaAgendamento.setSeconds(0);
+
+					int selectedMedicoCrm = Integer.parseInt(comboBoxMedicos.getSelectedItem().toString().split("-")[0].trim());
+					Medico selectedMedico = MedicoDAO.getInstance().getById(selectedMedicoCrm);
+
+					novaAgenda.setDataAgendamento(diaAgendamento);
+					novaAgenda.setMedico(selectedMedico);
+
+					novaAgenda.setPaciente(PacienteDAO.getInstance().getById(Integer.parseInt(comboBoxPacientes.getSelectedItem().toString().split(" ")[0])));
+
+					AgendaEquipamentoDAO.getInstance().persist(novaAgenda);
+					AgendaEquipamentoDAO.getInstance().remove(agenda);
+
+					JOptionPane.showMessageDialog(null, "Atualizado!");
+					frame.dispose();
 		});
 		atualizarButton.setBounds(403, 354, 117, 25);
 		frame.getContentPane().add(atualizarButton);
 		
-		horariosList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				atualizarButton.setEnabled(true);
-			}
-		});
+		horariosList.addListSelectionListener(e -> atualizarButton.setEnabled(true));
 		
 		JButton btnDeletar = new JButton("Deletar");
 		btnDeletar.addMouseListener(new MouseAdapter() {

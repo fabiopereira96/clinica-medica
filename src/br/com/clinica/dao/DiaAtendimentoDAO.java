@@ -26,7 +26,7 @@ public class DiaAtendimentoDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -68,21 +68,12 @@ public class DiaAtendimentoDAO {
 	public void remove(DiaAtendimento diaAtendimento) {
 		try {
 			entityManager.getTransaction().begin();
-			diaAtendimento = entityManager.find(DiaAtendimento.class, diaAtendimento.getIdDia());
+			diaAtendimento = entityManager.find(DiaAtendimento.class, diaAtendimento.getCodigo());
 			entityManager.remove(diaAtendimento);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			entityManager.getTransaction().rollback();
-		}
-	}
-
-	public void removeById(final int id) {
-		try {
-			DiaAtendimento diaAtendimento = getById(id);
-			remove(diaAtendimento);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 

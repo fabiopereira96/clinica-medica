@@ -27,12 +27,12 @@ public class SelecaoMedicoController implements SelectionController<Medico> {
 	}
 	
 	public List<Medico> getElements() {
-		return MedicoDAO.getInstance().getByEspecialidade(espec.getIdEspecialidade());
+		return MedicoDAO.getInstance().getByEspecialidade(espec.getCodigo());
 	}
 
 	public void selectedElement(Medico m) {
 		AgendamentoConsultaWindow agendamentoConsultaWindow
-			= new AgendamentoConsultaWindow(m.getCrm());
+			= new AgendamentoConsultaWindow(m.getCodigo());
 
 		agendamentoConsultaWindow.showFrame();
 	}

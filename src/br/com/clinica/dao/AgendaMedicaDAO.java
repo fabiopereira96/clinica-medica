@@ -1,5 +1,8 @@
 package br.com.clinica.dao;
 
+import br.com.clinica.entity.AgendaMedica;
+import br.com.clinica.entity.Medico;
+
 import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -7,9 +10,6 @@ import java.text.SimpleDateFormat;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import br.com.clinica.entity.AgendaMedica;
-import br.com.clinica.entity.Medico;
 
 public class AgendaMedicaDAO {
 
@@ -30,7 +30,7 @@ public class AgendaMedicaDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -42,8 +42,8 @@ public class AgendaMedicaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<AgendaMedica> getByMedico(final int medicoCrm) {
-		return entityManager.createQuery("FROM " + AgendaMedica.class.getName() + " WHERE idMedico=" + medicoCrm).getResultList();
+	public List<AgendaMedica> getByMedico(Medico medico) {
+		return entityManager.createQuery("FROM " + AgendaMedica.class.getName() + " WHERE medico=" + medico.getCodigo()).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class AgendaMedicaDAO {
 		String strDate = this.sdf.format(date);
 
 		return entityManager.createQuery(
-			"FROM " + AgendaMedica.class.getName() + " WHERE diaAgendamento <= '" + strDate + "' AND '" + strDate + "' <= ADDTIME(diaAgendamento, '" + doctor.getIntervaloAtendimento() + ":00') AND idMedico=" + doctor.getCrm()
+			"FROM " + AgendaMedica.class.getName() + " WHERE dia_agendamento <= " + strDate + " AND " + strDate + " <= ADDTIME(dia_agendamento, " + doctor.getIntervaloAtendimento() + ":00) AND medico=" + doctor.getCodigo()
 		).getResultList();
 	}
 	
@@ -71,17 +71,6 @@ public class AgendaMedicaDAO {
 		}
 	}
 
-	public void merge(AgendaMedica agenda) {
-		try {
-			entityManager.getTransaction().begin();
-			entityManager.merge(agenda);
-			entityManager.getTransaction().commit();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			entityManager.getTransaction().rollback();
-		}
-	}
-
 	public void remove(AgendaMedica agenda) {
 		try {
 			entityManager.getTransaction().begin();
@@ -93,14 +82,4 @@ public class AgendaMedicaDAO {
 			entityManager.getTransaction().rollback();
 		}
 	}
-
-	public void removeByDate(final Date date) {
-		try {
-			AgendaMedica agenda = getByDate(date);
-			remove(agenda);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
 }

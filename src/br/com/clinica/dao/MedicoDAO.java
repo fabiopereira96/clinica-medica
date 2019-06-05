@@ -26,7 +26,7 @@ public class MedicoDAO {
 	}
 
 	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-saracura-jpa");
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("clinica-medica-jpa");
 		if (entityManager == null) {
 			entityManager = factory.createEntityManager();
 		}
@@ -105,7 +105,7 @@ public class MedicoDAO {
 		return rows;
 	}
 	
-	public int getCrmByName (final String nome) {
+	public String getCrmByName (final String nome) {
 		List<Medico> rows = entityManager.createQuery ("FROM " + Medico.class.getName() + " WHERE nome = '" + nome + "'").getResultList();
 		return rows.get(0).getCrm();
 	}
