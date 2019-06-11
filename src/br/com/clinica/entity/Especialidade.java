@@ -25,18 +25,13 @@ public class Especialidade implements Serializable {
 	public Especialidade() {
 	}
 
-	public Especialidade(Integer codigo, String nome) {
+	public Especialidade(String nome) {
 		super();
-		this.codigo = codigo;
 		this.nome = nome;
 	}
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public String getNome() {

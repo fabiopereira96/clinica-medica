@@ -30,10 +30,6 @@ public class Convenio implements Serializable {
 		this.nome = nome;
 	}
 
-	public void setCodigo(Integer codigo){
-		this.codigo = codigo;
-	}
-
 	public Integer getCodigo(){
 		return codigo;
 	}
