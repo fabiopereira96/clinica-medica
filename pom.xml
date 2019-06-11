@@ -52,5 +52,10 @@
 			<version>1.7.4</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+  			<groupId>junit</groupId>     <!-- NOT org.junit here -->
+  			<artifactId>junit-dep</artifactId>
+  			<version>4.8.2</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -24,7 +24,7 @@ public class MainWindow {
 
 	private JFrame frame;
 	
-	private final static String LOGOPATH = "src/resources/logo-sized.png";
+	private final static String LOGOPATH = "src/resources/logo-principal.jpeg";
 
 	private static SelecaoWindow especialidadesWindow
 		= new SelecaoWindow<Especialidade, SelecaoEspecialidadeController>(
@@ -48,7 +48,7 @@ public class MainWindow {
 		frame.getContentPane().setSize(new Dimension(500, 300));
 		frame.setSize(new Dimension(500, 380));
 		frame.setResizable(false);
-		frame.setTitle("Clínica Saracura");
+		frame.setTitle("Clínica Médica");
 		
 		JPanel panel = new JPanel();
 		panel.setSize(new Dimension(500, 300));
@@ -114,7 +114,7 @@ public class MainWindow {
 		ImageIcon logo = new ImageIcon(LOGOPATH);
 		JLabel saracuraLabel = new JLabel(logo);
 		saracuraLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		saracuraLabel.setBounds(12, 60, 472, 200);
+		saracuraLabel.setBounds(1, 5, 472, 200);
 		panel.add(saracuraLabel);
 	}
 	

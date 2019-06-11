@@ -28,7 +28,7 @@ public class Equipamento implements Serializable{
 	private Boolean status;
 
 	@ManyToOne
-	@JoinColumn(name = "codigo")
+	@JoinColumn(name = "codigo", insertable=false, updatable=false)
 	private TipoExame exame;
 
 	public Equipamento() {}

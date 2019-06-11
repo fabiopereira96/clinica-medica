@@ -32,7 +32,7 @@ public class Paciente implements Serializable {
 	private char sexo;
 
 	@ManyToOne
-	@JoinColumn(name = "codigo")
+	@JoinColumn(name = "codigo", insertable=false, updatable=false)
 	private Convenio convenio;
 
 	public Paciente() {

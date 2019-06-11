@@ -43,14 +43,13 @@ public class Medico implements Serializable {
 	private String email;
 
 	@ManyToOne
-	@JoinColumn(name = "codigo")
+	@JoinColumn(name = "codigo", insertable=false, updatable=false)
 	private Especialidade especialidade;
 
 	@ManyToMany(targetEntity = DiaAtendimento.class)
 	private List<DiaAtendimento> diaAtendimento = new ArrayList<>();
 
-	public Medico() {
-	}
+	public Medico() {}
 
 	public Integer getCodigo(){
 		return codigo;
