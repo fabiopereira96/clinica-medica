@@ -14,7 +14,7 @@ Clínica Médica requer [Java][Java] v8+.
 ### Desenvolvimento
 
 ### TODO
-
+ 
  - Adicionar passo-a-passo de inicialização no README.md
 
 Licença
